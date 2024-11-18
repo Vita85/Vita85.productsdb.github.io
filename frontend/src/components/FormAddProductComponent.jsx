@@ -1,31 +1,16 @@
 import React, { useState } from "react";
 import { Formik, Form } from "formik";
-import * as Yup from "yup";
+
 import axios from "axios";
 
-import { Box, TextField, Button, CircularProgress } from "@mui/material";
+import { Box, Button, TextField, CircularProgress } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
 import { useNavigate } from "react-router-dom";
 
-import ModalComponent from "./ModalComponent";
+import productValidationSchema from "../validationSchemaFront";
 
-const validationSchema = Yup.object().shape({
-  title: Yup.string()
-    .matches(/^[a-zA-Z0-9\s\-\_]+$/, "Invalid title")
-    .min(2, "Too Short!")
-    .max(30, "Too Long!")
-    .required("Required"),
-  description: Yup.string()
-    .matches(/^[a-zA-Z0-9\s\-\_,.]+$/, "Invalid description")
-    .min(2, "Too Short!")
-    .max(200, "Too Long!")
-    .required("Required"),
-  price: Yup.number()
-    .min(1, "Minimum 1 character")
-    .max(9999, "Maximum 4 characters")
-    .required("Required"),
-});
+import ModalComponent from "./ModalComponent";
 
 const FormAddProduct = () => {
   const [loading, setLoading] = useState(false);
@@ -34,20 +19,21 @@ const FormAddProduct = () => {
   const [productAddError, setProductAddError] = useState(false);
 
   const navigate = useNavigate();
+  const API_URL = process.env.REACT_APP_API_URL;
 
   const handleSubmit = async (values, { resetForm }) => {
     setLoading(true);
     try {
-      await axios.post("http://localhost:8080/products", values);
+      await axios.post(`${API_URL}/products`, values);
       resetForm();
       setProductAddSuccess(true);
-      setProductAddError(false)
+      setProductAddError(false);
     } catch (error) {
       setProductAddSuccess(false);
-      setProductAddError(true)
+      setProductAddError(true);
     } finally {
       setLoading(false);
-          setModalActive(true);
+      setModalActive(true);
     }
   };
   return (
@@ -55,7 +41,7 @@ const FormAddProduct = () => {
       <Box sx={{ maxWidth: 500, margin: "0 auto", padding: 2 }}>
         <Formik
           initialValues={{ title: "", description: "", price: "" }}
-          validationSchema={validationSchema}
+          validationSchema={productValidationSchema}
           onSubmit={handleSubmit}
           validateOnBlur={true}
         >
@@ -131,7 +117,10 @@ const FormAddProduct = () => {
                 variant="contained"
                 color="success"
                 sx={{ marginTop: "15px", marginLeft: "15px" }}
-                onClick={() => navigate("/products")}>  Back to product Page
+                onClick={() => navigate("/products")}
+              >
+                {" "}
+                Back to product Page
               </Button>
             </Form>
           )}
@@ -147,8 +136,8 @@ const FormAddProduct = () => {
             navigate("/products");
           }
         }}
-       addSuccess={productAddSuccess}
-       addError={productAddError}
+        addSuccess={productAddSuccess}
+        addError={productAddError}
       ></ModalComponent>
     </>
   );

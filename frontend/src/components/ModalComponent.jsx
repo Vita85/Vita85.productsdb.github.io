@@ -1,6 +1,8 @@
 import React from "react";
 import { Button } from "@mui/material";
 
+import { modalContent } from "../modalContent";
+
 const ModalComponent = ({
   active,
   onClose,
@@ -11,31 +13,14 @@ const ModalComponent = ({
   addSuccess,
   addError,
 }) => {
+  const modalActionContent = modalContent(type, { deleteSuccess, deleteError, addSuccess, addError });
   return (
     <div className={active ? "modal active" : "modal"} onClick={onClose}>
       <div
         className="modal-content"
         onClick={(event) => event.stopPropagation()}
       >
-        {type === "delete" ? (
-          <p className="delete-one">Delete this product?</p>
-        ) : type === "deleteResult" ? (
-          <p className={deleteSuccess ? "success-add" : "fail-add"}>
-            {deleteSuccess
-              ? "Product delete successfully"
-              : deleteError
-              ? "Product delete successfully"
-              : null}
-          </p>
-        ) : type === "addProductResult" ? (
-          <p className={addSuccess ? "success-add" : "fail-add"}>
-            {addSuccess
-              ? "Product added successfully"
-              : addError
-              ? "Failed to add product"
-              : null}
-          </p>
-        ) : null}
+        {modalActionContent}
 
         <div>
           {type === "delete" ? (
