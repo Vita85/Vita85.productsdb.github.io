@@ -1,15 +1,13 @@
 const { ObjectId } = require("mongodb");
 
 const validationSchema = require("./validationSchemaBack");
-// require('dotenv').config();
-// const client = new MongoClient(process.env.MONGO_URI);
-// const database = client.db("sample_mflix");
 const { getDB } = require("./dbConnect");
 
 //GET
 const getAllProducts = async (req, res) => {
   try {
-    const productsCollection = database.collection("products");
+    const dbMongo = getDB()
+    const productsCollection = dbMongo.collection("products");
     const allProducts = await productsCollection.find().toArray();
     res.json(allProducts);
   } catch (error) {

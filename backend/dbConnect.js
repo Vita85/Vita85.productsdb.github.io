@@ -2,14 +2,15 @@ const { MongoClient } = require("mongodb");
 require("dotenv").config();
 
 const client = new MongoClient(process.env.MONGO_URI);
-let database
+let database = null;
 const connectDB = async () => {
   try {
     await client.connect();
-    console.log("Connect for MongoDB");
+    console.log("Connect to MongoDB");
     database = client.db("sample_mflix");
   } catch (error) {
-    console.log("Error connection for MongoDB", error);
+    console.log("Error connection to MongoDB", error);
+    throw error;
   }
 };
 

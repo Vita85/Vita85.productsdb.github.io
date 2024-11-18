@@ -5,9 +5,18 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 
 import { Button } from "@mui/material";
-import { Delete } from "@mui/icons-material";
+import { Delete, Edit } from "@mui/icons-material";
+
+
+import { useNavigate} from "react-router-dom";
 
 const ProductCard = ({ product, onDelete }) => {
+
+  const navigate = useNavigate();
+
+  const editProduct = () => {
+    navigate(`/products/edit/${product._id}`)
+  }
   return (
     <div>
       <Card
@@ -37,6 +46,14 @@ const ProductCard = ({ product, onDelete }) => {
             >
               Delete
             </Button>
+
+            <Button onClick={editProduct}
+              variant="contained"
+              color="primary"
+              startIcon={<Edit />}
+              >
+                Edit
+                </Button>
           </CardActions>
         </CardContent>
       </Card>
