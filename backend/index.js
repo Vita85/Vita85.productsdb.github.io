@@ -1,4 +1,5 @@
 const express = require("express");
+const { connectDB } = require("./dbConnect");
 const cors = require("cors");
 
 const bodyParser = require("body-parser");
@@ -8,7 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 const productController = require("./productController");
-const { connectDB } = require("./dbConnect");
+
 
 app.use(
   cors({

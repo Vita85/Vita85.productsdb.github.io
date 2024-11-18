@@ -28,7 +28,8 @@ const createProduct = async (req, res) => {
       .json({ message: "Invalid data", details: error.details });
   }
   try {
-    const products = database.collection("products");
+    const dbMongo = getDB()
+    const products = dbMongo.collection("products");
     const product = await products.insertOne(req.body);
     res.json(product);
   } catch (error) {
@@ -44,7 +45,8 @@ const deleteProduct = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const productsCollection = database.collection("products");
+    const dbMongo = getDB()
+    const productsCollection = dbMongo.collection("products");
 
     const resultDelete = await productsCollection.deleteOne({
       _id: new ObjectId(id),
@@ -69,7 +71,8 @@ const updateProduct = async (req, res) => {
   const productUpdate = req.body;
 
   try {
-    const productsCollection = database.collection("products");
+    const dbMongo = getDB()
+    const productsCollection = dbMongo.collection("products");
 
     const resultUpdate = await productsCollection.updateOne(
       { _id: new ObjectId(id) },

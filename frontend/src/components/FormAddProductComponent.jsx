@@ -24,7 +24,7 @@ const FormAddProduct = () => {
   const handleSubmit = async (values, { resetForm }) => {
     setLoading(true);
     try {
-      await axios.post(`${API_URL}/products`, values);
+      const response = await axios.post(`${API_URL}/products`, values);
       resetForm();
       setProductAddSuccess(true);
       setProductAddError(false);
@@ -36,6 +36,7 @@ const FormAddProduct = () => {
       setModalActive(true);
     }
   };
+
   return (
     <>
       <Box sx={{ maxWidth: 500, margin: "0 auto", padding: 2 }}>
