@@ -15,8 +15,8 @@ const ProductCard = ({ product, onDelete }) => {
   const navigate = useNavigate();
 
   const editProduct = () => {
-    navigate(`/products/edit/${product._id}`)
-  }
+    navigate(`/edit-product/${product._id}`);
+  };
   return (
     <div>
       <Card

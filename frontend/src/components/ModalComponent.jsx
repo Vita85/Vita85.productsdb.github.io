@@ -12,8 +12,17 @@ const ModalComponent = ({
   deleteSuccess,
   addSuccess,
   addError,
+  updateSuccess,
+  updateError,
 }) => {
-  const modalActionContent = modalContent(type, { deleteSuccess, deleteError, addSuccess, addError });
+  const modalActionContent = modalContent(type, {
+    deleteSuccess,
+    deleteError,
+    addSuccess,
+    addError,
+    updateSuccess,
+    updateError,
+  });
   return (
     <div className={active ? "modal active" : "modal"} onClick={onClose}>
       <div

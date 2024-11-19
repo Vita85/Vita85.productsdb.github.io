@@ -6,7 +6,7 @@ const { getDB } = require("./dbConnect");
 //GET
 const getAllProducts = async (req, res) => {
   try {
-    const dbMongo = getDB()
+    const dbMongo = getDB();
     const productsCollection = dbMongo.collection("products");
     const allProducts = await productsCollection.find().toArray();
     res.json(allProducts);
@@ -28,7 +28,7 @@ const createProduct = async (req, res) => {
       .json({ message: "Invalid data", details: error.details });
   }
   try {
-    const dbMongo = getDB()
+    const dbMongo = getDB();
     const products = dbMongo.collection("products");
     const product = await products.insertOne(req.body);
     res.json(product);
@@ -36,7 +36,7 @@ const createProduct = async (req, res) => {
     res
       .status(500)
       .json({ message: "Internal Server Error. Error adding product.", error });
-  } 
+  }
 };
 
 //DELETE
@@ -45,7 +45,7 @@ const deleteProduct = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const dbMongo = getDB()
+    const dbMongo = getDB();
     const productsCollection = dbMongo.collection("products");
 
     const resultDelete = await productsCollection.deleteOne({
@@ -62,7 +62,7 @@ const deleteProduct = async (req, res) => {
       message: "Internal Server Error. Error deleting product.",
       error,
     });
-  } 
+  }
 };
 
 //PUT
@@ -71,9 +71,19 @@ const updateProduct = async (req, res) => {
   const productUpdate = req.body;
 
   try {
-    const dbMongo = getDB()
+    const dbMongo = getDB();
     const productsCollection = dbMongo.collection("products");
 
+    const findProduct = await productsCollection.findOne({
+      _id: new ObjectId(id),
+    });
+    if (
+      findProduct.title === productUpdate.title &&
+      findProduct.description === productUpdate.description &&
+      findProduct.price === productUpdate.price
+    ) {
+      return res.status(400).json({ message: "Not changes." });
+    }
     const resultUpdate = await productsCollection.updateOne(
       { _id: new ObjectId(id) },
       { $set: productUpdate }
