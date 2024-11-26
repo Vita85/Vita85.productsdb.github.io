@@ -1,41 +1,26 @@
-import React, { useState } from "react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Formik, Form } from "formik";
-
-import axios from "axios";
 
 import { Box, Button, TextField, CircularProgress } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
-import { useNavigate } from "react-router-dom";
-
 import productValidationSchema from "../validationSchemaFront";
 
 import ModalComponent from "./ModalComponent";
+import useAddProduct from "./useAddProduct";
 
 const FormAddProduct = () => {
-  const [loading, setLoading] = useState(false);
-  const [modalActive, setModalActive] = useState(false);
-  const [productAddSuccess, setProductAddSuccess] = useState(false);
-  const [productAddError, setProductAddError] = useState(false);
-
   const navigate = useNavigate();
-  const API_URL = process.env.REACT_APP_API_URL;
 
-  const handleSubmit = async (values, { resetForm }) => {
-    setLoading(true);
-    try {
-      const response = await axios.post(`${API_URL}/products`, values);
-      resetForm();
-      setProductAddSuccess(true);
-      setProductAddError(false);
-    } catch (error) {
-      setProductAddSuccess(false);
-      setProductAddError(true);
-    } finally {
-      setLoading(false);
-      setModalActive(true);
-    }
-  };
+  const {
+    loading,
+    modalActive,
+    productAddSuccess,
+    productAddError,
+    handleModalClose,
+    handleSubmit,
+  } = useAddProduct();
 
   return (
     <>
@@ -120,7 +105,6 @@ const FormAddProduct = () => {
                 sx={{ marginTop: "15px", marginLeft: "15px" }}
                 onClick={() => navigate("/products")}
               >
-                {" "}
                 Back to product Page
               </Button>
             </Form>
@@ -131,15 +115,10 @@ const FormAddProduct = () => {
       <ModalComponent
         active={modalActive}
         type="addProductResult"
-        onClose={() => {
-          setModalActive(false);
-          if (productAddSuccess) {
-            navigate("/products");
-          }
-        }}
+        onClose={handleModalClose}
         addSuccess={productAddSuccess}
         addError={productAddError}
-      ></ModalComponent>
+      />
     </>
   );
 };

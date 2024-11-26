@@ -1,5 +1,5 @@
 const express = require("express");
-const { connectDB } = require("./dbConnect");
+const { mongoInstance } = require("./dbConnect");
 const cors = require("cors");
 
 const bodyParser = require("body-parser");
@@ -10,7 +10,6 @@ const PORT = process.env.PORT || 8000;
 
 const productController = require("./productController");
 
-
 app.use(
   cors({
     origin: "http://localhost:3000",
@@ -19,10 +18,13 @@ app.use(
 
 app.use(bodyParser.json());
 
-connectDB();
+mongoInstance.connectDB();
 
-//GET
+//GET ALL
 app.get("/products", productController.getAllProducts);
+
+//GET ID
+app.get("/products/:id", productController.getProductId);
 
 //POST
 app.post("/products", productController.createProduct);

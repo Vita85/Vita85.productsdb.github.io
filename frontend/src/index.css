@@ -62,3 +62,8 @@ button {
   font-size: 20px;
   margin-bottom: 15px;
 }
+.no-changes {
+  color: #ff3d07;
+  font-size: 20px;
+  margin-bottom: 15px;
+}

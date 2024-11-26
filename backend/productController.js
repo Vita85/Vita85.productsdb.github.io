@@ -1,12 +1,12 @@
 const { ObjectId } = require("mongodb");
 
 const validationSchema = require("./validationSchemaBack");
-const { getDB } = require("./dbConnect");
+const { mongoInstance } = require("./dbConnect");
 
-//GET
+//GET ALL
 const getAllProducts = async (req, res) => {
   try {
-    const dbMongo = getDB();
+    const dbMongo = mongoInstance.getDB();
     const productsCollection = dbMongo.collection("products");
     const allProducts = await productsCollection.find().toArray();
     res.json(allProducts);
@@ -17,8 +17,28 @@ const getAllProducts = async (req, res) => {
   }
 };
 
-//POST
+//GET ID
+const getProductId = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const dbMongo = mongoInstance.getDB();
+    const productsCollection = dbMongo.collection("products");
+    const findProductId = await productsCollection.findOne({
+      _id: new ObjectId(id),
+    });
+    if (!findProductId) {
+      res.status(404).json({ message: "Product not found." });
+    }
+    res.json(findProductId);
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal Server Error. Error update product.",
+      error,
+    });
+  }
+};
 
+//POST
 const createProduct = async (req, res) => {
   const { error, value } = validationSchema.validate(req.body);
 
@@ -28,7 +48,7 @@ const createProduct = async (req, res) => {
       .json({ message: "Invalid data", details: error.details });
   }
   try {
-    const dbMongo = getDB();
+    const dbMongo = mongoInstance.getDB();
     const products = dbMongo.collection("products");
     const product = await products.insertOne(req.body);
     res.json(product);
@@ -40,12 +60,11 @@ const createProduct = async (req, res) => {
 };
 
 //DELETE
-
 const deleteProduct = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const dbMongo = getDB();
+    const dbMongo = mongoInstance.getDB();
     const productsCollection = dbMongo.collection("products");
 
     const resultDelete = await productsCollection.deleteOne({
@@ -71,32 +90,34 @@ const updateProduct = async (req, res) => {
   const productUpdate = req.body;
 
   try {
-    const dbMongo = getDB();
+    const dbMongo = mongoInstance.getDB();
     const productsCollection = dbMongo.collection("products");
 
     const findProduct = await productsCollection.findOne({
       _id: new ObjectId(id),
     });
+
     if (
       findProduct.title === productUpdate.title &&
       findProduct.description === productUpdate.description &&
       findProduct.price === productUpdate.price
     ) {
-      return res.status(400).json({ message: "Not changes." });
+      return res.status(200).json({ message: "No changes to update." });
     }
+
     const resultUpdate = await productsCollection.updateOne(
       { _id: new ObjectId(id) },
       { $set: productUpdate }
     );
 
     if (resultUpdate.modifiedCount > 0) {
-      res.json({ message: "Product update." });
+      res.json({ message: "Product updated." });
     } else {
-      res.status(404).json({ message: "Product not found or not changes." });
+      res.status(404).json({ message: "Product not found or no changes." });
     }
   } catch (error) {
     res.status(500).json({
-      message: "Internal Server Error. Error update product.",
+      message: "Internal Server Error. Error updating product.",
       error,
     });
   }
@@ -104,6 +125,7 @@ const updateProduct = async (req, res) => {
 
 module.exports = {
   getAllProducts,
+  getProductId,
   deleteProduct,
   updateProduct,
   createProduct,

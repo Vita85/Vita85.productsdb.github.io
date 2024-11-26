@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@mui/material";
-
+import { useNavigate } from "react-router-dom";
 import { modalContent } from "../modalContent";
 
 const ModalComponent = ({
@@ -15,6 +15,7 @@ const ModalComponent = ({
   updateSuccess,
   updateError,
 }) => {
+  const navigate = useNavigate();
   const modalActionContent = modalContent(type, {
     deleteSuccess,
     deleteError,
@@ -47,7 +48,11 @@ const ModalComponent = ({
               </Button>
             </>
           ) : (
-            <Button variant="contained" color="success" onClick={onClose}>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => navigate("/products")}
+            >
               Back to product Page
             </Button>
           )}

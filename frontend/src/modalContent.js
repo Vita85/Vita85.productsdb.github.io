@@ -1,4 +1,14 @@
-export const modalContent = (type, { deleteSuccess, deleteError, addSuccess, addError, updateError, updateSuccess }) => {
+export const modalContent = (
+  type,
+  {
+    deleteSuccess,
+    deleteError,
+    addSuccess,
+    addError,
+    updateError,
+    updateSuccess,
+  }
+) => {
   switch (type) {
     case "delete":
       return <p className="delete-one">Delete this product?</p>;
@@ -22,17 +32,25 @@ export const modalContent = (type, { deleteSuccess, deleteError, addSuccess, add
             : null}
         </p>
       );
-      case "updateProductResult" : 
+    case "updateProductResult":
       return (
-        <p className={updateSuccess ? "success-add" : "fail-add"}>
+        <p
+          className={
+            updateSuccess
+              ? "success-add"
+              : updateError
+              ? "fail-add"
+              : "no-changes"
+          }
+        >
           {updateSuccess
-            ? "Product update successfully"
+            ? "Product updated successfully"
             : updateError
             ? "Failed to update product"
-            : "Doesn't changes"}
+            : "No changes to update"}
         </p>
-      )
-     
+      );
+
     default:
       return null;
   }
